@@ -42,17 +42,36 @@ function parseArgs(argv) {
 // ---------- minimal YAML frontmatter parser (token blocks only) ----------
 // We don't pull a YAML dependency (keep the skill dependency-light). The
 // frontmatter we emit is regular: 2-space nested maps, "key: value" scalars,
-// quoted strings. This parser handles exactly that shape.
+// quoted strings, inline "# comments" (which the canonical template uses
+// heavily), and "key: >" / "key: |" folded/literal block scalars (used for
+// multi-line descriptions). This parser handles exactly that shape.
+
+// Strip a trailing "# inline comment" without touching a "#" that is inside a
+// quoted string (e.g. a hex value like "#0071e3") or glued to a token. A YAML
+// comment must be preceded by whitespace (or start the line).
+function stripInlineComment(s) {
+  let inS = false, inD = false;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === "'" && !inD) inS = !inS;
+    else if (ch === '"' && !inS) inD = !inD;
+    else if (ch === "#" && !inS && !inD && (i === 0 || /\s/.test(s[i - 1]))) return s.slice(0, i);
+  }
+  return s;
+}
+
 function parseFrontmatter(md) {
   const m = md.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return null;
   const lines = m[1].split("\n");
   const root = {};
   const stack = [{ indent: -1, obj: root }];
-  for (const raw of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i];
     if (!raw.trim() || raw.trim().startsWith("#")) continue;
     const indent = raw.match(/^ */)[0].length;
-    const line = raw.trim();
+    const line = stripInlineComment(raw).trim();
+    if (!line) continue;
     const ci = line.indexOf(":");
     if (ci === -1) continue;
     const key = line.slice(0, ci).trim();
@@ -64,6 +83,19 @@ function parseFrontmatter(md) {
       const child = {};
       parent[key] = child;
       stack.push({ indent, obj: child });
+    } else if (/^[>|][+-]?$/.test(val)) {
+      // block scalar — absorb the following more-indented lines as the value
+      const folded = val[0] === ">";
+      const buf = [];
+      while (i + 1 < lines.length) {
+        const next = lines[i + 1];
+        if (!next.trim()) { buf.push(""); i++; continue; }
+        if (next.match(/^ */)[0].length <= indent) break;
+        buf.push(next.trim());
+        i++;
+      }
+      while (buf.length && buf[buf.length - 1] === "") buf.pop();
+      parent[key] = folded ? buf.join(" ") : buf.join("\n");
     } else {
       val = val.replace(/^["']|["']$/g, "");
       parent[key] = val;
