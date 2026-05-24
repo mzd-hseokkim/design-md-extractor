@@ -210,8 +210,13 @@ function readableText(hex) {
 }
 
 // ---------- HTML rendering ----------
+function isColorValue(v) {
+  if (typeof v !== "string") return false;
+  const s = v.trim();
+  return /^#[0-9a-f]{3,8}$/i.test(s) || /^(rgb|hsl)a?\([^)]*\)$/i.test(s);
+}
 function renderColorSwatches(colors) {
-  const entries = Object.entries(colors).filter(([, v]) => /^#?[0-9a-f]{3,8}$/i.test(String(v).replace("#", "") ? v : ""));
+  const entries = Object.entries(colors).filter(([, v]) => isColorValue(v));
   if (!entries.length) return `<p class="empty">No colors captured.</p>`;
   return `<div class="swatch-grid">` + entries.map(([name, hex]) => `
     <div class="swatch">
