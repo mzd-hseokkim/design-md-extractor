@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Extractor output
+design-md-out/
+*.tokens.json
+preview.html
+screenshot-*.png
+
+# Local Claude Code workspace settings (not part of the plugin)
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

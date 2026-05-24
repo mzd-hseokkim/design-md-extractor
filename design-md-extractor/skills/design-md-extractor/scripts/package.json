@@ -1,0 +1,15 @@
+{
+  "name": "design-md-extractor-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deterministic design-token extractor for the design-md-extractor skill.",
+  "bin": {
+    "extract": "./extract.js"
+  },
+  "scripts": {
+    "postinstall": "echo 'Next: npx playwright install chromium (or run extract.js with --channel chrome to use an installed browser)'"
+  },
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}
