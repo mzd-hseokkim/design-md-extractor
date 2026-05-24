@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Tools for working with DESIGN.md — extracting design systems from live sites and previewing them.",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "design-md-extractor",
       "source": "./design-md-extractor",
-      "description": "Turn any live website into a production-grade DESIGN.md design-system document, then render a deterministic preview.html to verify captured tokens against the original site.",
-      "version": "1.0.0",
+      "description": "Turn any live website into a production-grade DESIGN.md design-system document, then render a deterministic preview.html to verify captured tokens against the original site. Ships two skills: design-md-extractor and design-md-preview.",
+      "version": "1.1.0",
       "author": {
         "name": "hseokkim",
         "email": "hseokkim@mz.co.kr"
