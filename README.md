@@ -4,18 +4,19 @@ A Claude Code [plugin marketplace](https://docs.claude.com/en/docs/claude-code/p
 
 ## Install
 
-Add this marketplace, then install the plugin:
+Add this marketplace from GitHub, then install the plugin:
 
 ```bash
-# from a local clone
-/plugin marketplace add /path/to/design.md-plugin
-
-# or from a git/GitHub repo
-/plugin marketplace add <owner>/<repo>
+/plugin marketplace add mzd-hseokkim/design-md-extractor
+/plugin install design-md-extractor@design-md-marketplace
 ```
 
+> Already added it? Pull the latest with `/plugin marketplace update design-md-marketplace`.
+
+To work from a local clone instead, point at the checkout directory:
+
 ```bash
-/plugin install design-md-extractor@design-md-marketplace
+/plugin marketplace add /path/to/design-md-extractor
 ```
 
 Once installed, just ask Claude:
