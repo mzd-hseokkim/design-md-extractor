@@ -1,6 +1,6 @@
 ---
 name: design-md-extractor
-description: Generate a production-grade DESIGN.md design-system document from a live website URL. Use this skill whenever the user gives a URL (or a few URLs/routes of one site) and wants to extract its design language — colors, typography, spacing, components, atmosphere — into a DESIGN.md file that an AI coding agent can read to reproduce matching UI. Trigger on phrases like "make a design.md from this site", "extract the design system of <url>", "turn this website into a design spec for my coding agent", "reverse-engineer this site's UI tokens", or any request to capture how a website looks into a reusable markdown design document. The skill runs a deterministic browser-based token extractor first, then writes the interpretive prose sections itself. It can also generate a faithful `preview.html` swatch sheet to visually verify a DESIGN.md (or tokens.json) against the original site — trigger that on requests like "show me a preview of this design.md", "visualize the design tokens", or "make an HTML preview of the design system".
+description: Generate a production-grade DESIGN.md design-system document from a live website URL. Use this skill whenever the user gives a URL (or a few URLs/routes of one site) and wants to extract its design language — colors, typography, spacing, components, atmosphere — into a DESIGN.md file that an AI coding agent can read to reproduce matching UI. Trigger on phrases like "make a design.md from this site", "extract the design system of <url>", "turn this website into a design spec for my coding agent", "reverse-engineer this site's UI tokens", or any request to capture how a website looks into a reusable markdown design document. The skill runs a deterministic browser-based token extractor first, then writes the interpretive prose sections itself. To then visually verify the result, use the companion `design-md-preview` skill, which renders a DESIGN.md (or tokens.json) into a preview.html swatch sheet.
 ---
 
 # DESIGN.md Extractor
@@ -74,27 +74,9 @@ Hard rules while writing:
 
 Write the final `DESIGN.md` to the user's project root (or wherever they ask). When done, tell the user how to use it: drop `DESIGN.md` in the project root and instruct the coding agent to follow it for UI work.
 
-### Step 5 — Visual preview (verification)
+### Step 5 — Offer a visual preview (verification)
 
-Generate a `preview.html` so the user can eyeball the captured tokens against the real site. This is a **verification** artifact, not a design showcase — run it whenever a DESIGN.md or tokens.json exists and the user wants to check fidelity (or proactively offer it after writing a DESIGN.md).
-
-```bash
-node scripts/preview.js path/to/DESIGN.md --out preview.html --screenshots ./design-md-out
-# or straight from raw tokens:
-node scripts/preview.js ./design-md-out/tokens.json --out preview.html --screenshots ./design-md-out
-```
-
-The script is fully deterministic (no LLM, no browser needed to *generate* it). It accepts **either** a `DESIGN.md` (parses the YAML frontmatter) **or** the extractor's `tokens.json`. It renders:
-- color swatches with exact hex labels,
-- a type ladder rendered in each tier's **captured family / weight / letter-spacing / OpenType feature** (so negative tracking, `ss01`, `tnum` are visible),
-- radius and spacing scales as visual boxes,
-- buttons / inputs / cards rendered to their measured spec, with `{colors.*}` / `{rounded.*}` token references auto-resolved,
-- the captured screenshot(s) embedded inline (base64) for direct side-by-side comparison,
-- a light/dark theme toggle.
-
-**Design principle for the preview:** the page chrome is deliberately neutral and restrained (monospace, muted panels). Do NOT make the preview itself stylish — its job is to let the *tokens* stand out so discrepancies vs. the original are obvious. If you ever hand-edit the preview, keep the chrome quiet. The output is a single self-contained HTML file (screenshots inlined), so the user can open or share it directly.
-
-If a token group renders empty in the preview (e.g. "No components captured"), that's a signal the extraction was thin for that group — consider re-running the extractor on a richer route.
+Once the `DESIGN.md` is written, offer to render a `preview.html` so the user can eyeball the captured tokens against the real site. This is handled by the **companion `design-md-preview` skill** — it accepts the `DESIGN.md` (or the extractor's `tokens.json`) and the `--out`/`screenshots` directory, and produces a self-contained swatch sheet. Hand it the `DESIGN.md` you just wrote and the `design-md-out` directory holding the screenshots.
 
 ## Quality bar
 

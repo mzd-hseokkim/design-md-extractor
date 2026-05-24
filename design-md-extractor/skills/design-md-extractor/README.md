@@ -45,13 +45,7 @@ Then hand `tokens.json` + the screenshots to Claude with the instruction to writ
 
 ## Visual preview / verification
 
-Render any `DESIGN.md` (or raw `tokens.json`) into a self-contained `preview.html` swatch sheet to check fidelity against the original site:
-
-```bash
-node scripts/preview.js ./DESIGN.md --out preview.html --screenshots ./out
-```
-
-It shows color chips (exact hex), a type ladder rendered in each tier's real family/weight/tracking (so `ss01`, `tnum`, and negative letter-spacing are visible), radius + spacing scales, buttons/inputs/cards rendered to spec with `{token}` references resolved, and the captured screenshots inlined for side-by-side comparison — plus a light/dark toggle. Fully deterministic, no LLM. The preview chrome is intentionally neutral so the *tokens* stand out.
+To render a `DESIGN.md` (or raw `tokens.json`) into a self-contained `preview.html` swatch sheet for fidelity-checking against the original site, use the companion **`design-md-preview`** skill (sibling directory `../design-md-preview`). It shows color chips, a type ladder in each tier's real family/weight/tracking, radius + spacing scales, components rendered to spec, and the captured screenshots inlined — fully deterministic, no LLM.
 
 ## Files
 
@@ -61,7 +55,6 @@ design-md-extractor/
 ├── README.md
 ├── scripts/
 │   ├── extract.js                    # the deterministic token extractor
-│   ├── preview.js                    # deterministic preview.html generator
 │   └── package.json
 └── references/
     ├── token-mapping.md              # raw candidates → semantic token names

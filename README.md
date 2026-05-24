@@ -1,6 +1,6 @@
 # design-md-marketplace
 
-A Claude Code [plugin marketplace](https://docs.claude.com/en/docs/claude-code/plugins) containing **design-md-extractor** — a skill that turns any live website into a production-grade `DESIGN.md` design-system document and renders a deterministic `preview.html` to verify the captured tokens against the original site.
+A Claude Code [plugin marketplace](https://docs.claude.com/en/docs/claude-code/plugins) containing the **design-md-extractor** plugin. The plugin bundles two skills: one that turns any live website into a production-grade `DESIGN.md` design-system document, and one that renders a deterministic `preview.html` to verify the captured tokens against the original site.
 
 ## Install
 
@@ -31,16 +31,20 @@ design.md-plugin/                          # marketplace root
 └── design-md-extractor/                   # plugin root
     ├── .claude-plugin/
     │   └── plugin.json                    # plugin manifest
-    └── skills/
-        └── design-md-extractor/           # the skill (auto-discovered)
+    └── skills/                            # auto-discovered skills
+        ├── design-md-extractor/           # skill 1 — extract DESIGN.md
+        │   ├── SKILL.md
+        │   ├── README.md
+        │   ├── scripts/                   # extract.js
+        │   └── references/                # token-mapping.md, design-md-template.md
+        └── design-md-preview/             # skill 2 — render preview.html
             ├── SKILL.md
-            ├── README.md
-            ├── scripts/                   # extract.js, preview.js
-            └── references/                # token-mapping.md, design-md-template.md
+            └── scripts/                   # preview.js
 ```
 
-## Plugins
+## Skills
 
-| Plugin | Description |
+| Skill | Description |
 | --- | --- |
-| `design-md-extractor` | Extract a site's design language (colors, type, spacing, components, atmosphere) into a `DESIGN.md` an AI coding agent can read, plus a `preview.html` verification sheet. |
+| `design-md-extractor` | Extract a site's design language (colors, type, spacing, components, atmosphere) into a `DESIGN.md` an AI coding agent can read. |
+| `design-md-preview` | Render a `DESIGN.md` (or `tokens.json`) into a deterministic, self-contained `preview.html` swatch sheet to verify fidelity against the original site. |
